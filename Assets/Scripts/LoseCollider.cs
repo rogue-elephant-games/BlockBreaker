@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class LoseCollider : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private SceneLoader sceneLoader = new SceneLoader();
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        sceneLoader.LoadGameOverScene();
     }
 }
