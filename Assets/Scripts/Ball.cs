@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,12 +14,14 @@ public class Ball : MonoBehaviour
     private bool ballLaunched = false;
 
     AudioSource audioSource;
+    Rigidbody2D rigidbody2D;
 
     // Start is called before the first frame update
     void Start()
     {
         paddleToBallVector = transform.position - paddle1.transform.position;
         audioSource = GetComponent<AudioSource>();
+        rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -28,7 +31,17 @@ public class Ball : MonoBehaviour
         {
             LockBallToPaddle();
             LaunchOnMouseClick();
-        }     
+        }
+        else
+        {
+            BombOnMouseClick();
+        }
+    }
+
+    private void IfUserClicks(Action action)
+    {
+        if(Input.GetMouseButtonDown(0))
+            action();
     }
 
     private void LockBallToPaddle()
@@ -37,19 +50,25 @@ public class Ball : MonoBehaviour
         transform.position = paddlePosition + paddleToBallVector;
     }
 
-    private void LaunchOnMouseClick()
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
+    private void LaunchOnMouseClick() =>
+        IfUserClicks(() => {
             ballLaunched = true;
-            GetComponent<Rigidbody2D>().velocity = new Vector2(launchBallVelocityX, launchBallVelocityY);
-        }
-    }
+            rigidbody2D.velocity = new Vector2(launchBallVelocityX, launchBallVelocityY);
+        });
+
+    private void BombOnMouseClick() =>
+        IfUserClicks(() => {
+            rigidbody2D.velocity = new Vector2(gameObject.transform.position.x, -(launchBallVelocityY * 1.5f));
+        });
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(ballLaunched)
+        Vector2 velocityTweak = new Vector2(UnityEngine.Random.Range(0f, ballSounds.Length), UnityEngine.Random.Range(0f, ballSounds.Length));
+        if(ballLaunched) 
+        {
             audioSource.
                 PlayOneShot(ballSounds[UnityEngine.Random.Range(0,ballSounds.Length)]);
+            rigidbody2D.velocity += velocityTweak;
+        } 
     }
 }

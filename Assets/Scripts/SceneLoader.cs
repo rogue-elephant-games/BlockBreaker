@@ -32,7 +32,11 @@ public class SceneLoader : MonoBehaviour
 
     public void LoadSceneByName(string sceneName) => SceneManager.LoadScene(sceneIndexFromName(sceneName));
 
-    public void LoadStartScene() => SceneManager.LoadScene(0);
+    public void LoadStartScene()
+    {
+        SceneManager.LoadScene(0);
+        FindObjectOfType<GameSession>().ResetGame();
+    }
     public void LoadSuccessScene() => LoadSceneByName("Success");
     public void LoadGameOverScene() => LoadSceneByName("Game Over");
 }

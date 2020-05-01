@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class LoseCollider : MonoBehaviour
 {
-    private SceneLoader sceneLoader = new SceneLoader();
+    private SceneLoader sceneLoader;
+    public void Start()
+    {
+        sceneLoader = FindObjectOfType<SceneLoader>();
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         sceneLoader.LoadGameOverScene();
